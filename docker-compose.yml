@@ -1,0 +1,47 @@
+# version: '3.9'
+
+networks:
+  my-net:
+    driver: bridge
+
+services:
+  web:
+    build: .
+    command: sh -c "wait-for-it db:5432 -- python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - media-data:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy  # Wait for health!
+    networks:
+      - my-net
+  
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: myproject
+      POSTGRES_PASSWORD: secret
+      # Quiet locale warning
+      LC_ALL: C.UTF-8
+      LANG: C.UTF-8
+    ports:
+      - "5432:5432"
+    healthcheck:  # Tells "I'm ready"
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgres/data
+    networks:
+      - my-net
+    
+
+volumes:
+  media-data:
+  postgres-data:
+
+

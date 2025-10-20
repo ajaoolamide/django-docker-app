@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+.env
+venv/
+.git/
+media/  # Don't copy uploads—use volumes (Topic 10)
+logs/
+*.log
+.DS_Store  # Mac junk
+.vscode/
