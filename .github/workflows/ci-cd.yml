@@ -28,7 +28,7 @@ jobs:
         python manage.py test
     
     - name: Build Docker image 
-      run:docker build -t my-django-app .
+      run: docker build -t my-django-app .
 
     - name: Test Docker image
       run: |
